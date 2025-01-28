@@ -1,0 +1,23 @@
+{
+  "name": "pizza-node",
+  "version": "1.0.0",
+  "description": "\"Node-ifying\" the pizza app",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tostrander/pizza-node.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tostrander/pizza-node/issues"
+  },
+  "homepage": "https://github.com/tostrander/pizza-node#readme",
+  "dependencies": {
+    "express": "^4.21.2"
+  }
+}
