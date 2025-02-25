@@ -1,5 +1,26 @@
 //Import Express
 import express from 'express';
+//Import MariaDB
+import mariadb from 'mariadb';
+
+const pool = mariadb.createPool({
+    host: 'localhost',
+    user: 'root',
+    password: '1234',
+    database: 'pizza'
+});
+
+async function connect() {
+    try {
+        const conn = await pool.getConnection();
+        console.log('Connected to the database!')
+        return conn;
+    } catch (err)
+    {
+        console.log(`Error connecting to the database ${err}`);
+    }
+}
+
 
 //Instantiate an Express application
 const app = express();
@@ -16,8 +37,7 @@ app.use(express.static('public'));
 //Define a port number for our server to listen on
 const PORT = 3000;
 
-//define array
-const orders = [];
+
 
 //Define a "default" route for our home page
 app.get('/', (req, res) => {
@@ -45,7 +65,14 @@ app.post('/thankyou', (req, res) => {
     res.render('thankyou.ejs', { order });
 });
 
-app.get('/admin', (req, res) => {
+app.get('/admin', async (req, res) => {
+
+    const conn = await connect();
+
+    const orders = await conn.query('SELECT * FROM ORDERS;');
+
+    console.log(orders);
+
     res.render('admin', { orders });
 
 })
