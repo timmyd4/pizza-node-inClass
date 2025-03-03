@@ -3,6 +3,8 @@ import express from 'express';
 //Import MariaDB
 import mariadb from 'mariadb';
 
+import {validateForm} from './services/validation.js'
+
 const pool = mariadb.createPool({
     host: 'localhost',
     user: 'root',
@@ -37,8 +39,6 @@ app.use(express.static('public'));
 //Define a port number for our server to listen on
 const PORT = 3000;
 
-
-
 //Define a "default" route for our home page
 app.get('/', (req, res) => {
 
@@ -47,7 +47,7 @@ app.get('/', (req, res) => {
 });
 
 //Define a "thank you" route
-app.post('/thankyou', (req, res) => {
+app.post('/thankyou', async (req, res) => {
     
     const order = 
     {
@@ -59,11 +59,44 @@ app.post('/thankyou', (req, res) => {
         size: req.body.size
     };
 
-    orders.push(order);
-    console.log(orders);
+    const result = validateForm(order);
+    if(!result.isValid)
+    {
+        console.log(result.errors)
+        res.send(result.errors);
+        return;
+    }
+
+    //Connect to database
+    const conn = await connect();
+    
+    //Convert toppings to string
+    if (order.toppings)
+    {
+        if(Array.isArray(order.toppings))
+        {
+            order.toppings = order.toppings.join(",");
+        }
+    }
+    else
+    {
+        order.toppings = "";
+    }
+
+    //Insert query
+    const insertQuery = await conn.query(`INSERT INTO orders (firstName, lastName, email, method, toppings, size)
+         VALUES (?, ?, ?, ?, ?, ?)`,
+         [order.fname, order.lname, order.email, order.method, order.toppings, order.size]);
+
+    //Insert into
+
+
+
     // Send our thank you page
     res.render('thankyou.ejs', { order });
 });
+
+
 
 app.get('/admin', async (req, res) => {
 
