@@ -9,7 +9,8 @@ const pool = mariadb.createPool({
     host: 'localhost',
     user: 'root',
     password: '1234',
-    database: 'pizza'
+    database: 'pizza',
+    port: '3306'
 });
 
 async function connect() {
@@ -28,7 +29,7 @@ async function connect() {
 const app = express();
 
 //Middleware
-app.use(express.urlencoded({ extended: true}));
+app.use(express.urlencoded({ extended: true }));
 
 //Set view engine for app
 app.set('view engine', 'ejs');
